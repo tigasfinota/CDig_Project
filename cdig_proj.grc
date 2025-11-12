@@ -33,11 +33,11 @@ options:
     state: enabled
 
 blocks:
-- name: samp_rate
+- name: window_size
   id: variable
   parameters:
     comment: ''
-    value: '32000'
+    value: '48'
   states:
     bus_sink: false
     bus_source: false
@@ -98,7 +98,7 @@ blocks:
     affinity: ''
     alias: ''
     comment: ''
-    delay: '0'
+    delay: '16'
     maxoutbuf: '0'
     minoutbuf: '0'
     num_ports: '1'
@@ -118,7 +118,7 @@ blocks:
     affinity: ''
     alias: ''
     comment: ''
-    delay: '0'
+    delay: '240'
     maxoutbuf: '0'
     minoutbuf: '0'
     num_ports: '1'
@@ -176,7 +176,7 @@ blocks:
     comment: ''
     maxoutbuf: '0'
     minoutbuf: '0'
-    num_items: '2'
+    num_items: '64'
     type: complex
     vlen: '1'
   states:
@@ -192,14 +192,14 @@ blocks:
     affinity: ''
     alias: ''
     comment: ''
-    fft_size: '1024'
+    fft_size: '64'
     forward: 'True'
     maxoutbuf: '0'
     minoutbuf: '0'
     nthreads: '1'
     shift: 'True'
     type: complex
-    window: window.blackmanharris(1024)
+    window: ''
   states:
     bus_sink: false
     bus_source: false
@@ -217,7 +217,7 @@ blocks:
     maxoutbuf: '0'
     minoutbuf: '0'
     samp_delay: '0'
-    taps: ''
+    taps: '[1]*window_size'
     type: ccc
   states:
     bus_sink: false
@@ -236,7 +236,7 @@ blocks:
     maxoutbuf: '0'
     minoutbuf: '0'
     samp_delay: '0'
-    taps: ''
+    taps: '[1]*window_size'
     type: fff
   states:
     bus_sink: false
@@ -254,10 +254,10 @@ blocks:
     host: ''
     maxoutbuf: '0'
     minoutbuf: '0'
-    mtu: '10000'
-    port: '52001'
+    mtu: 10k
+    port: '12345'
     tcp_no_delay: 'False'
-    type: TCP_SERVER
+    type: UDP_SERVER
   states:
     bus_sink: false
     bus_source: false
@@ -334,7 +334,7 @@ blocks:
     bw7: '0'
     bw8: '0'
     bw9: '0'
-    center_freq0: '0'
+    center_freq0: 5.22G
     center_freq1: '0'
     center_freq10: '0'
     center_freq11: '0'
@@ -442,7 +442,7 @@ blocks:
     dc_offs_enb9: default
     dev_addr: '""'
     dev_args: ''
-    gain0: '0'
+    gain0: '30'
     gain1: '0'
     gain10: '0'
     gain11: '0'
@@ -671,7 +671,7 @@ blocks:
     rx_agc7: Default
     rx_agc8: Default
     rx_agc9: Default
-    samp_rate: samp_rate
+    samp_rate: 20M
     sd_spec0: ''
     sd_spec1: ''
     sd_spec2: ''
@@ -684,7 +684,7 @@ blocks:
     start_time: '-1.0'
     stream_args: ''
     stream_chans: '[]'
-    sync: sync
+    sync: none
     time_source0: ''
     time_source1: ''
     time_source2: ''
