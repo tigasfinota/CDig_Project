@@ -22,7 +22,11 @@ options:
     run_options: prompt
     sizing_mode: fixed
     thread_safe_setters: ''
+<<<<<<< HEAD
     title: Not titled yet
+=======
+    title: cdig_ieee820.11a
+>>>>>>> f76d3ad (gnu radio file)
     window_size: (1000,1000)
   states:
     bus_sink: false
@@ -33,6 +37,33 @@ options:
     state: enabled
 
 blocks:
+<<<<<<< HEAD
+=======
+- name: fft_len
+  id: variable
+  parameters:
+    comment: ''
+    value: '64'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [320, 16.0]
+    rotation: 0
+    state: enabled
+- name: mtu
+  id: variable
+  parameters:
+    comment: ''
+    value: '10000'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [424, 16.0]
+    rotation: 0
+    state: enabled
+>>>>>>> f76d3ad (gnu radio file)
 - name: window_size
   id: variable
   parameters:
@@ -42,7 +73,11 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
+<<<<<<< HEAD
     coordinate: [200, 12]
+=======
+    coordinate: [200, 16.0]
+>>>>>>> f76d3ad (gnu radio file)
     rotation: 0
     state: enabled
 - name: blocks_complex_to_mag_0
@@ -58,7 +93,11 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
+<<<<<<< HEAD
     coordinate: [1168, 248.0]
+=======
+    coordinate: [1024, 248.0]
+>>>>>>> f76d3ad (gnu radio file)
     rotation: 0
     state: enabled
 - name: blocks_complex_to_mag_squared_0
@@ -74,7 +113,11 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
+<<<<<<< HEAD
     coordinate: [848, 344.0]
+=======
+    coordinate: [472, 328.0]
+>>>>>>> f76d3ad (gnu radio file)
     rotation: 0
     state: enabled
 - name: blocks_conjugate_cc_0
@@ -89,7 +132,11 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
+<<<<<<< HEAD
     coordinate: [592, 232.0]
+=======
+    coordinate: [488, 232.0]
+>>>>>>> f76d3ad (gnu radio file)
     rotation: 0
     state: enabled
 - name: blocks_delay_0
@@ -109,7 +156,11 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
+<<<<<<< HEAD
     coordinate: [448, 168.0]
+=======
+    coordinate: [336, 184.0]
+>>>>>>> f76d3ad (gnu radio file)
     rotation: 0
     state: enabled
 - name: blocks_delay_1
@@ -129,8 +180,13 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
+<<<<<<< HEAD
     coordinate: [1200, 448.0]
     rotation: 180
+=======
+    coordinate: [1544, 176.0]
+    rotation: 0
+>>>>>>> f76d3ad (gnu radio file)
     state: enabled
 - name: blocks_divide_xx_0
   id: blocks_divide_xx
@@ -147,7 +203,33 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
+<<<<<<< HEAD
     coordinate: [1368, 248.0]
+=======
+    coordinate: [1216, 280.0]
+    rotation: 0
+    state: enabled
+- name: blocks_file_source_0
+  id: blocks_file_source
+  parameters:
+    affinity: ''
+    alias: ''
+    begin_tag: pmt.PMT_NIL
+    comment: ''
+    file: C:\Users\LENOVO\OneDrive\Ambiente de Trabalho\CDig\Wifi_Project_Baseband_recordings\Sample1_20MHz_Channel36.bin
+    length: '0'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    offset: '0'
+    repeat: 'False'
+    type: complex
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [96, 232.0]
+>>>>>>> f76d3ad (gnu radio file)
     rotation: 0
     state: enabled
 - name: blocks_multiply_xx_0
@@ -165,7 +247,11 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
+<<<<<<< HEAD
     coordinate: [824, 232.0]
+=======
+    coordinate: [688, 232.0]
+>>>>>>> f76d3ad (gnu radio file)
     rotation: 0
     state: enabled
 - name: blocks_stream_to_vector_0
@@ -183,8 +269,13 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
+<<<<<<< HEAD
     coordinate: [896, 456.0]
     rotation: 180
+=======
+    coordinate: [1912, 240.0]
+    rotation: 0
+>>>>>>> f76d3ad (gnu radio file)
     state: enabled
 - name: fft_vxx_0
   id: fft_vxx
@@ -199,13 +290,22 @@ blocks:
     nthreads: '1'
     shift: 'True'
     type: complex
+<<<<<<< HEAD
     window: ''
+=======
+    window: window.blackmanharris(64)
+>>>>>>> f76d3ad (gnu radio file)
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
+<<<<<<< HEAD
     coordinate: [632, 416.0]
     rotation: 180
+=======
+    coordinate: [2080, 200.0]
+    rotation: 0
+>>>>>>> f76d3ad (gnu radio file)
     state: enabled
 - name: fir_filter_xxx_0
   id: fir_filter_xxx
@@ -223,7 +323,11 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
+<<<<<<< HEAD
     coordinate: [968, 232.0]
+=======
+    coordinate: [816, 232.0]
+>>>>>>> f76d3ad (gnu radio file)
     rotation: 0
     state: enabled
 - name: fir_filter_xxx_0_0
@@ -242,7 +346,102 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
+<<<<<<< HEAD
     coordinate: [1032, 328.0]
+=======
+    coordinate: [816, 312.0]
+    rotation: 0
+    state: enabled
+- name: ieee802_11_decode_mac_0
+  id: ieee802_11_decode_mac
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    debug: 'False'
+    log: 'False'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [2544, 224.0]
+    rotation: 0
+    state: enabled
+- name: ieee802_11_frame_equalizer_0
+  id: ieee802_11_frame_equalizer
+  parameters:
+    affinity: ''
+    algo: ieee802_11.LS
+    alias: ''
+    bw: 20e6
+    comment: ''
+    debug: 'True'
+    freq: 5.89e9
+    log: 'False'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [2304, 200.0]
+    rotation: 0
+    state: enabled
+- name: ieee802_11_parse_mac_0
+  id: ieee802_11_parse_mac
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    debug: 'True'
+    log: 'False'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [2736, 224.0]
+    rotation: 0
+    state: enabled
+- name: ieee802_11_sync_long_1
+  id: ieee802_11_sync_long
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    debug: 'False'
+    log: 'False'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    sync_length: '240'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1736, 216.0]
+    rotation: 0
+    state: enabled
+- name: ieee802_11_sync_short_0
+  id: ieee802_11_sync_short
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    debug: 'False'
+    log: 'False'
+    maxoutbuf: '0'
+    min_plateau: '2'
+    minoutbuf: '0'
+    threshold: '0.8'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1360, 192.0]
+>>>>>>> f76d3ad (gnu radio file)
     rotation: 0
     state: enabled
 - name: network_socket_pdu_0
@@ -254,7 +453,11 @@ blocks:
     host: ''
     maxoutbuf: '0'
     minoutbuf: '0'
+<<<<<<< HEAD
     mtu: 10k
+=======
+    mtu: mtu
+>>>>>>> f76d3ad (gnu radio file)
     port: '12345'
     tcp_no_delay: 'False'
     type: UDP_SERVER
@@ -262,6 +465,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
+<<<<<<< HEAD
     coordinate: [1144, 568.0]
     rotation: 0
     state: enabled
@@ -699,6 +903,9 @@ blocks:
     bus_source: false
     bus_structure: null
     coordinate: [184, 216.0]
+=======
+    coordinate: [2928, 208.0]
+>>>>>>> f76d3ad (gnu radio file)
     rotation: 0
     state: enabled
 
@@ -707,6 +914,7 @@ connections:
 - [blocks_complex_to_mag_squared_0, '0', fir_filter_xxx_0_0, '0']
 - [blocks_conjugate_cc_0, '0', blocks_multiply_xx_0, '0']
 - [blocks_delay_0, '0', blocks_conjugate_cc_0, '0']
+<<<<<<< HEAD
 - [blocks_multiply_xx_0, '0', fir_filter_xxx_0, '0']
 - [blocks_stream_to_vector_0, '0', fft_vxx_0, '0']
 - [fir_filter_xxx_0, '0', blocks_complex_to_mag_0, '0']
@@ -714,6 +922,26 @@ connections:
 - [uhd_usrp_source_0, '0', blocks_complex_to_mag_squared_0, '0']
 - [uhd_usrp_source_0, '0', blocks_delay_0, '0']
 - [uhd_usrp_source_0, '0', blocks_multiply_xx_0, '1']
+=======
+- [blocks_delay_0, '0', ieee802_11_sync_short_0, '0']
+- [blocks_delay_1, '0', ieee802_11_sync_long_1, '1']
+- [blocks_divide_xx_0, '0', ieee802_11_sync_short_0, '2']
+- [blocks_file_source_0, '0', blocks_complex_to_mag_squared_0, '0']
+- [blocks_file_source_0, '0', blocks_delay_0, '0']
+- [blocks_file_source_0, '0', blocks_multiply_xx_0, '1']
+- [blocks_multiply_xx_0, '0', fir_filter_xxx_0, '0']
+- [blocks_stream_to_vector_0, '0', fft_vxx_0, '0']
+- [fft_vxx_0, '0', ieee802_11_frame_equalizer_0, '0']
+- [fir_filter_xxx_0, '0', blocks_complex_to_mag_0, '0']
+- [fir_filter_xxx_0, '0', ieee802_11_sync_short_0, '1']
+- [fir_filter_xxx_0_0, '0', blocks_divide_xx_0, '1']
+- [ieee802_11_decode_mac_0, out, ieee802_11_parse_mac_0, in]
+- [ieee802_11_frame_equalizer_0, '0', ieee802_11_decode_mac_0, '0']
+- [ieee802_11_parse_mac_0, out, network_socket_pdu_0, pdus]
+- [ieee802_11_sync_long_1, '0', blocks_stream_to_vector_0, '0']
+- [ieee802_11_sync_short_0, '0', blocks_delay_1, '0']
+- [ieee802_11_sync_short_0, '0', ieee802_11_sync_long_1, '0']
+>>>>>>> f76d3ad (gnu radio file)
 
 metadata:
   file_format: 1
