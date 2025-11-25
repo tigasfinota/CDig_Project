@@ -1,0 +1,118 @@
+PROJECT WIKI
+
+08/Outubro a 14/Outubro:
+    - Leitura da documentação
+
+04/Novembro a 11/Novembro:
+    - Desenvolvimento do OFDM receiver no GNURadio
+    - Implementação dos blocos da biblioteca gr-ieee802-11 (github)
+
+12/Novembro a 19/Novembro:
+	- Análise dos tópicos propostos para a semana 1 e 2
+	- Resposta às questões de cada semana (verificar respostas abaixo)
+	
+20/Novembro a 26/Novembro:
+	-
+	
+
+
+
+
+
+Week 1 topics:
+	Lookup the 802.11a OFDM system design parameters
+	■ Bandwidth, sub-carrier spacing, number of sub-carriers, IFFT/ FFT size, number of data sub-carriers, number of pilot sub-carriers:
+		- Bandwidth: ieee802-11 supports signals with a bandwidth of 20MHz
+		- Sub-carrier spacing: derived from the bandwith and FFT size => 20Mhz/64 = 312.5kHz
+		- Sampling rate: 20Msamples/s
+		- IFFT/FFT size: 64
+		- Nº data sub-carriers: 48 (FFT-Pilot-DC-guard = 64-4-1-11 = 48)
+		- Nº pilot sub-carriers: 4 
+
+	■ Why are there unused sub-carriers and where are they located?
+		- No sub-carriers are unsused, they are just unsused for data specificaly; Given that the sub-carriers that aren't used for data are the DC and Guard sub-carriers, for a total of 1+11=12 sub-carriers
+	
+	
+	■ OFDM symbol duration, sampling rate, OFDM symbol length (samples), cyclic prefix length
+		- Symbol duration: (80 samples) / (20Msamples/s) = 4us
+		- Sampling rate: 1/4us = 250Ksymbols/s
+		- Symbol length: 80 samples (64 data + 16 cyclic prefix)
+		- cyclic prefix length: 16 samples
+	
+	
+	■ Frame prefix sequence, length, repetition, duration
+		○ Read section 2.1 and understand what it means
+			- Section 2.1 outlines the structure of the OFDM Receiver: Frame detection and Frame decoding. As for the frame prefix, it's used a short training sequence with 16 samples that repeats a total of 10 times. The total duration is 8us => (16 samples * 10 repetitions) / (20MHz sampling rate) = 8us
+			
+	■ Where are the mentioned tags?
+		○ Work yourself through Section 2.2
+		
+	■ Identify the blocks that calculate the autocorrelation
+	
+	■ Identify the blocks that calculate the power
+	
+	■ Try to obtain a graph like Figure 2
+	
+	■ Explore the effect of varying NWin, e.g. in the graph like Figure 2
+	
+
+Week 2
+	■ Understand the OFDM Sync Short block
+		○ What does the block do
+		○ What is the meaning of the thresholds
+		○ Explore the effect of changing the thresholds
+		○ Understand the limitations of the approach taken, and try to demonstrate a case where it breaks
+
+
+
+Week 3
+■ Understand the block OFDM Sync Long (Section 2.3)
+■ Understand the algorithm for frequency offset correction.
+○ Where is it implemented?
+○ Which parameters could you vary?
+○ Why is there a delayed input? Could you change that value and what would the impact be of doing that?
+Week 4
+■ Understand symbol alignment (Section 2.4)
+○ How is symbol alignment done (algorithm logic)?
+○ Why is matched filtering used for symbol alignment but not for frame detection?
+○ Have a look at the code that implements equation 6.
+○ Why do you add 64 in expression 7?
+■ What does the stream to vector block do?
+
+Week 5
+■ Understand Phase Offset Correction (Section 2.5)
+○ Why do you need to correct the phase?
+○ Find the code that estimates the phase offset
+○ How are you correcting the phase, i.e. which values are being changed?
+
+Week 6
+■ Understand the OFDM Equalize Symbols module
+○What does it do?
+○ Why is the implementation limited to deal with BPSK and QPSK
+modulation?
+○ Which other functions are performed in this block?
+■ Work through Section 2.7
+○ Look up the frame format for 802.x frames and how the data in the initial fields is transmitted. You are already looking into the MAC layer.
+•	Recall what you learned in Computer Networks course about framing. How can you delimit a frame?
+○ What is the Signal Field? Which information is sent there? Why is this information necessary?
+○ How is that information encoded?
+
+Week 7
+■ Work through decoding the payload (Section 2.8)
+○ Which abstract receiver blocks are within the module OFDM Decode Mac?
+○ How many constellation symbols are demodulated at once? Why? Can you change this? What is the impact of changing this?
+•	What is the actual process of digital demodulation? What is the input and the output, and how is the conversion done? Look at the code if necessary.
+○ Understand what is de-interleaving.
+•	Watch the video in Panopto explaining what is de-interleaving.
+•	Find the code that does de-interleaving and understand it.
+○ Understand de-scrambling
+•	What is scrambling/ descrambling? Why is it used?
+•	How can the receiver de-scramble without explicit knowledge of the scrambler initial state?
+■ Which fields of the received frames are used and how?
+
+Week 8
+■ Understand the decoding (Section 2.8)
+○ Will add detailed questions about the decoding later
+■ Try out your 802.11a receiver with a real 802.11a access point. Can you see the received frames?
+○ Read Section 8 (Interoperability)
+
