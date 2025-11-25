@@ -9,7 +9,7 @@ PROJECT WIKI
 
 12/Novembro a 19/Novembro:
 	- Análise dos tópicos propostos para a semana 1 e 2
-	- Resposta às questões de cada semana (verificar respostas abaixo)
+	- Resposta às questões das semanas 1 e 2 (verificar respostas abaixo)
 	
 20/Novembro a 26/Novembro:
 	-
@@ -46,20 +46,26 @@ Week 1 topics:
 			
 	■ Where are the mentioned tags?
 		○ Work yourself through Section 2.2
+			- The tags are used to define the beggining of the sample; The tags are also used on de decoding stage to annotate legth and encoding scheme of the frame
 		
 	■ Identify the blocks that calculate the autocorrelation
+		- The autocorrelation equation is defined by a[n]=∑s[n+k]s'[n+k+16]; The blocks used for the autocorrelation are the ones present on the top half of the filter: delay (16), complex conjugate (s'), multiply, decimating FIR filter (moving average) - summation -  and complex to mag (preforms absolute value)
 	
 	■ Identify the blocks that calculate the power
-	
-	■ Try to obtain a graph like Figure 2
+		- The power equation is defined by p[n]=∑∣s[n+k]∣^2; The blocks used to calculate power are complex to mag^2 (s^2), decimating FIR filter (Moving Average)- summation-  and divide block (to get c(n))
 	
 	■ Explore the effect of varying NWin, e.g. in the graph like Figure 2
-	
+		- Increasing Nwin​: Results in stronger low-pass filtering. The autocorrelation graph is smoother and less afected by noise, but it blurs the "plateau" edges, making the exact start detection less sharp.
+		- Decreasing Nwin​: Reduces filtering, making the output more responsive to changes but also noisier.
 
 Week 2
 	■ Understand the OFDM Sync Short block
 		○ What does the block do
+			- The block functions as a gate for the data stream; Inputs: samples from the USRP and the calculated normalized autocorrelation coefficient; Output: If a frame is detected: It opens the gate and copies a fixed number of samples (corresponding to the maximum frame length) to the subsequent processing blocks, if no frame is detected it drops the samples, preventing noise from consuming processing power; Operation: It monitors the autocorrelation stream to detect the "plateau"
+		
 		○ What is the meaning of the thresholds
+			- Used to distinguish between noise and actual wanted data; The threshold defines the minimum magnitude required for the normalized autocorrelation coefficient to be considered part of a preamble (training sequence) and minimum "plateau" (number of consecutive samples) to confirm a detection
+
 		○ Explore the effect of changing the thresholds
 		○ Understand the limitations of the approach taken, and try to demonstrate a case where it breaks
 
@@ -115,4 +121,5 @@ Week 8
 ○ Will add detailed questions about the decoding later
 ■ Try out your 802.11a receiver with a real 802.11a access point. Can you see the received frames?
 ○ Read Section 8 (Interoperability)
+
 
