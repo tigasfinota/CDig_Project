@@ -12,7 +12,8 @@ PROJECT WIKI
 	- Resposta às questões das semanas 1 e 2 (verificar respostas abaixo)
 	
 20/Novembro a 26/Novembro:
-	-
+	- Análise dos tópicos propostos para a semana 3, 4 e 5
+	- Resposta às questões das semanas 3, 4 e 5 (verificar respostas abaixo)
 	
 
 
@@ -126,6 +127,16 @@ The estimation is done in the OFDM Equalize Symbols block after the FFT. IEEE 80
 How is the phase corrected and what changing values are involved?
 The estimated phase offset is subtracted from each subcarrier in the symbol. The complex samples in the frequency domain have their phase corrected. Magnitude is not changed except when performing channel equalization, which is a separate step.
 
+
+
+
+
+
+
+
+
+
+
 Week 6
 ■ Understand the OFDM Equalize Symbols module
 ○What does it do?
@@ -156,6 +167,7 @@ Week 8
 ○ Will add detailed questions about the decoding later
 ■ Try out your 802.11a receiver with a real 802.11a access point. Can you see the received frames?
 ○ Read Section 8 (Interoperability)
+
 
 
 
