@@ -71,25 +71,60 @@ Week 2
 
 
 
-Week 3
-■ Understand the block OFDM Sync Long (Section 2.3)
-■ Understand the algorithm for frequency offset correction.
-○ Where is it implemented?
-○ Which parameters could you vary?
-○ Why is there a delayed input? Could you change that value and what would the impact be of doing that?
-Week 4
-■ Understand symbol alignment (Section 2.4)
-○ How is symbol alignment done (algorithm logic)?
-○ Why is matched filtering used for symbol alignment but not for frame detection?
-○ Have a look at the code that implements equation 6.
-○ Why do you add 64 in expression 7?
-■ What does the stream to vector block do?
+WEEK 3
 
-Week 5
-■ Understand Phase Offset Correction (Section 2.5)
-○ Why do you need to correct the phase?
-○ Find the code that estimates the phase offset
-○ How are you correcting the phase, i.e. which values are being changed?
+Understanding the OFDM Sync Long block:
+The OFDM Sync Long block performs two main operations: correcting frequency offset and aligning OFDM symbols. Frequency offset correction is based on the short training sequence. In an ideal OFDM signal, samples spaced 16 positions apart should match because the short training sequence repeats every 16 samples. If there is frequency offset, multiplying s[n] by s[n+16] gives a complex value with a phase rotation. The receiver sums these products and estimates the offset as:
+
+df = (1/16) * arg(sum of s[n] * s[n+16])
+
+Each sample is then corrected by multiplying by exp(i * n * df).
+The same block also determines the exact start of the first data symbol, using the long training sequence for precise alignment.
+
+Where is the offset correction implemented?
+It is implemented inside OFDM Sync Long as described in Section 2.3 of the paper.
+
+Which parameters could be changed?
+The parameters that conceptually could change include the number of samples used in the accumulation (Nshort), the duration of the averaging window, and the behavior of the correction exponent. However, these are mathematical tuning parameters, not usually user-facing options.
+
+Why is there a delayed input?
+The algorithm needs to compare s[n] with s[n+16], so one version of the signal is delayed by 16 samples. This number comes from the IEEE 802.11 preamble design.
+
+Could that value be changed and what would be the impact?
+No. The value 16 comes from the OFDM short training sequence repeating every 16 samples. Changing it would break the assumption used for autocorrelation, meaning the frequency offset estimate would become invalid and synchronization would likely fail.
+
+WEEK 4
+
+How is symbol alignment performed?
+Symbol alignment is done using matched filtering with the long training sequence, which is 64 samples long and repeats 2.5 times. The receiver computes the correlation between the incoming samples and the known training sequence:
+
+sum(s[n+k] * LT[k]) for k from 0 to 63
+
+It records the three largest correlation peaks and determines the beginning of the first data symbol using:
+
+nP = max(peak positions) + 64
+
+This +64 accounts for the distance between the final peak and the start of the first OFDM data symbol. After this, the cyclic prefix (16 samples) is removed and each symbol is passed as a block to the FFT.
+
+Why is matched filtering used for symbol alignment but not for frame detection?
+Frame detection needs to run continuously over the full signal stream in real time, so autocorrelation (which is cheaper computationally) is used. Symbol alignment only needs to run over a small portion of the data (the preamble), so matched filtering can be used to get much more precise timing.
+
+What does the stream to vector block do?
+It converts the continuous sample stream into fixed-size vectors (e.g., 64 samples per block), which are required for performing the FFT on each OFDM symbol.
+
+Why do you add 64 in expression 7?
+Because the dominant peak found corresponds to a point 64 samples before the end of the long training sequence. Adding 64 moves the index to where the first OFDM data symbol begins.
+
+WEEK 5
+
+Why do we need to correct the phase?
+Even with time synchronization, small differences in the sender and receiver timing introduce a phase rotation that increases with subcarrier index. If not corrected, the constellation rotates, and correct demodulation becomes impossible.
+
+Where is the code that estimates the phase offset?
+The estimation is done in the OFDM Equalize Symbols block after the FFT. IEEE 802.11 includes four pilot subcarriers with known BPSK values. Their phase is used to estimate the linear phase trend using regression, based on the symbol index indicated earlier by OFDM Sync Long.
+
+How is the phase corrected and what changing values are involved?
+The estimated phase offset is subtracted from each subcarrier in the symbol. The complex samples in the frequency domain have their phase corrected. Magnitude is not changed except when performing channel equalization, which is a separate step.
 
 Week 6
 ■ Understand the OFDM Equalize Symbols module
@@ -121,5 +156,6 @@ Week 8
 ○ Will add detailed questions about the decoding later
 ■ Try out your 802.11a receiver with a real 802.11a access point. Can you see the received frames?
 ○ Read Section 8 (Interoperability)
+
 
 
