@@ -22,7 +22,7 @@ options:
     run_options: prompt
     sizing_mode: fixed
     thread_safe_setters: ''
-    title: cdig_proj
+    title: proj
     window_size: (1000,1000)
   states:
     bus_sink: false
@@ -37,12 +37,24 @@ blocks:
   id: variable
   parameters:
     comment: ''
-    value: '32000'
+    value: '20000000'
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [200, 12]
+    coordinate: [200, 16.0]
+    rotation: 0
+    state: enabled
+- name: window_size
+  id: variable
+  parameters:
+    comment: ''
+    value: '48'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [296, 16.0]
     rotation: 0
     state: enabled
 - name: blocks_complex_to_mag_0
@@ -157,7 +169,7 @@ blocks:
     alias: ''
     begin_tag: pmt.PMT_NIL
     comment: ''
-    file: C:\Users\LENOVO\OneDrive\Ambiente de Trabalho\Wifi_Project_Baseband_recordings\Sample3_20MHz_Channel100.bin
+    file: C:\Users\LENOVO\OneDrive - Universidade do Porto\Escola\25.26\Wifi_Project_Baseband_recordings\Sample3_20MHz_Channel100.bin
     length: '0'
     maxoutbuf: '0'
     minoutbuf: '0'
@@ -239,7 +251,7 @@ blocks:
     maxoutbuf: '0'
     minoutbuf: '0'
     samp_delay: '0'
-    taps: ''
+    taps: '[1]*window_size'
     type: ccc
   states:
     bus_sink: false
@@ -258,7 +270,7 @@ blocks:
     maxoutbuf: '0'
     minoutbuf: '0'
     samp_delay: '0'
-    taps: ''
+    taps: '[1]*window_size'
     type: fff
   states:
     bus_sink: false
