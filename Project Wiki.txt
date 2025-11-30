@@ -9,15 +9,7 @@ PROJECT WIKI
 
 12/Novembro a 19/Novembro:
 	- Análise dos tópicos propostos para a semana 1 e 2
-	- Resposta às questões das semanas 1 e 2 (verificar respostas abaixo)
-	
-20/Novembro a 26/Novembro:
-	- Análise dos tópicos propostos para a semana 3, 4 e 5
-	- Resposta às questões das semanas 3, 4 e 5 (verificar respostas abaixo)
-	
-
-
-
+	- Resposta às questões das semanas 1 e 2
 
 
 Week 1 topics:
@@ -72,129 +64,103 @@ Week 2
 
 
 
+20/Novembro a 26/Novembro:
+	- Análise dos tópicos propostos para a semana 3, 4 e 5
+	- Resposta às questões das semanas 3, 4 e 5 (verificar respostas abaixo)
+
 WEEK 3
 
-Understanding the OFDM Sync Long block:
-The OFDM Sync Long block performs two main operations: correcting frequency offset and aligning OFDM symbols. Frequency offset correction is based on the short training sequence. In an ideal OFDM signal, samples spaced 16 positions apart should match because the short training sequence repeats every 16 samples. If there is frequency offset, multiplying s[n] by s[n+16] gives a complex value with a phase rotation. The receiver sums these products and estimates the offset as:
+	■ Understanding the OFDM Sync Long block:
+		- The OFDM Sync Long block performs two main operations: correcting frequency offset and aligning OFDM symbols. Frequency offset correction is based on the short training sequence. In an ideal OFDM signal, samples spaced 16 positions apart should match because the short training sequence repeats every 16 samples. If there is frequency offset, multiplying s[n] by s[n+16] gives a complex value with a phase rotation. The receiver sums these products and estimates the offset as:
+			df = (1/16) * arg(sum of s[n] * s[n+16])
+		- Each sample is then corrected by multiplying by exp(i * n * df).
+		- The same block also determines the exact start of the first data symbol, using the long training sequence for precise alignment.
 
-df = (1/16) * arg(sum of s[n] * s[n+16])
+	■ Where is the offset correction implemented?
+		- It is implemented inside OFDM Sync Long as described in Section 2.3 of the paper.
 
-Each sample is then corrected by multiplying by exp(i * n * df).
-The same block also determines the exact start of the first data symbol, using the long training sequence for precise alignment.
+	■ Which parameters could be changed?
+		- The parameters that conceptually could change include the number of samples used in the accumulation (Nshort), the duration of the averaging window, and the behavior of the correction exponent. However, these are mathematical tuning parameters, not usually user-facing options.
 
-Where is the offset correction implemented?
-It is implemented inside OFDM Sync Long as described in Section 2.3 of the paper.
+	■ Why is there a delayed input?
+		- The algorithm needs to compare s[n] with s[n+16], so one version of the signal is delayed by 16 samples. This number comes from the IEEE 802.11 preamble design.
 
-Which parameters could be changed?
-The parameters that conceptually could change include the number of samples used in the accumulation (Nshort), the duration of the averaging window, and the behavior of the correction exponent. However, these are mathematical tuning parameters, not usually user-facing options.
-
-Why is there a delayed input?
-The algorithm needs to compare s[n] with s[n+16], so one version of the signal is delayed by 16 samples. This number comes from the IEEE 802.11 preamble design.
-
-Could that value be changed and what would be the impact?
-No. The value 16 comes from the OFDM short training sequence repeating every 16 samples. Changing it would break the assumption used for autocorrelation, meaning the frequency offset estimate would become invalid and synchronization would likely fail.
+	■ Could that value be changed and what would be the impact?
+		- 	No. The value 16 comes from the OFDM short training sequence repeating every 16 samples. Changing it would break the assumption used for autocorrelation, meaning the frequency offset estimate would become invalid and synchronization would likely fail.
 
 WEEK 4
 
-How is symbol alignment performed?
-Symbol alignment is done using matched filtering with the long training sequence, which is 64 samples long and repeats 2.5 times. The receiver computes the correlation between the incoming samples and the known training sequence:
+	■ How is symbol alignment performed?
+		- Symbol alignment is done using matched filtering with the long training sequence, which is 64 samples long and repeats 2.5 times. The receiver computes the correlation between the incoming samples and the known training sequence:
+			sum(s[n+k] * LT[k]) for k from 0 to 63
+		- It records the three largest correlation peaks and determines the beginning of the first data symbol using:
+			nP = max(peak positions) + 64
+		- This +64 accounts for the distance between the final peak and the start of the first OFDM data symbol. After this, the cyclic prefix (16 samples) is removed and each symbol is passed as a block to the FFT.
 
-sum(s[n+k] * LT[k]) for k from 0 to 63
+	■ Why is matched filtering used for symbol alignment but not for frame detection?
+		- Frame detection needs to run continuously over the full signal stream in real time, so autocorrelation (which is cheaper computationally) is used. Symbol alignment only needs to run over a small portion of the data (the preamble), so matched filtering can be used to get much more precise timing.
 
-It records the three largest correlation peaks and determines the beginning of the first data symbol using:
+	■ What does the stream to vector block do?
+		- It converts the continuous sample stream into fixed-size vectors (e.g., 64 samples per block), which are required for performing the FFT on each OFDM symbol.
 
-nP = max(peak positions) + 64
-
-This +64 accounts for the distance between the final peak and the start of the first OFDM data symbol. After this, the cyclic prefix (16 samples) is removed and each symbol is passed as a block to the FFT.
-
-Why is matched filtering used for symbol alignment but not for frame detection?
-Frame detection needs to run continuously over the full signal stream in real time, so autocorrelation (which is cheaper computationally) is used. Symbol alignment only needs to run over a small portion of the data (the preamble), so matched filtering can be used to get much more precise timing.
-
-What does the stream to vector block do?
-It converts the continuous sample stream into fixed-size vectors (e.g., 64 samples per block), which are required for performing the FFT on each OFDM symbol.
-
-Why do you add 64 in expression 7?
-Because the dominant peak found corresponds to a point 64 samples before the end of the long training sequence. Adding 64 moves the index to where the first OFDM data symbol begins.
+	■ Why do you add 64 in expression 7?
+		- Because the dominant peak found corresponds to a point 64 samples before the end of the long training sequence. Adding 64 moves the index to where the first OFDM data symbol begins.
 
 WEEK 5
 
-Why do we need to correct the phase?
-Even with time synchronization, small differences in the sender and receiver timing introduce a phase rotation that increases with subcarrier index. If not corrected, the constellation rotates, and correct demodulation becomes impossible.
+	■ Why do we need to correct the phase?
+		- Even with time synchronization, small differences in the sender and receiver timing introduce a phase rotation that increases with subcarrier index. If not corrected, the constellation rotates, and correct demodulation becomes impossible.
 
-Where is the code that estimates the phase offset?
-The estimation is done in the OFDM Equalize Symbols block after the FFT. IEEE 802.11 includes four pilot subcarriers with known BPSK values. Their phase is used to estimate the linear phase trend using regression, based on the symbol index indicated earlier by OFDM Sync Long.
+	■ Where is the code that estimates the phase offset?
+		- The estimation is done in the OFDM Equalize Symbols block after the FFT. IEEE 802.11 includes four pilot subcarriers with known BPSK values. Their phase is used to estimate the linear phase trend using regression, based on the symbol index indicated earlier by OFDM Sync Long.
 
-How is the phase corrected and what changing values are involved?
-The estimated phase offset is subtracted from each subcarrier in the symbol. The complex samples in the frequency domain have their phase corrected. Magnitude is not changed except when performing channel equalization, which is a separate step.
-
-
+	■ How is the phase corrected and what changing values are involved?
+		- The estimated phase offset is subtracted from each subcarrier in the symbol. The complex samples in the frequency domain have their phase corrected. Magnitude is not changed except when performing channel equalization, which is a separate step.
 
 
+27/Novembro a 3/Dezembro:
+	- Análise dos tópicos propostos para a semana 6 e 7
+	- Resposta às questões das semanas 6 e 7 (verificar respostas abaixo)
 
+WEEK 6
+	■ Understand the OFDM Equalize Symbols module
+		○ What does it do? 
+			- The OFDM Equalize Symbols module is responsible for transitioning from the time domain to the frequency domain (following the FFT). Its primary tasks are phase offset correction and channel estimation (correcting the magnitude of the carriers).
 
+		○ Why is the implementation limited to deal with BPSK and QPSK modulation? 
+			- The implementation assumes the magnitude of the carriers is sinc-shaped and corrects it based on that assumption. However, this shape can depend on the sender and hardware filters. Since higher-order modulations like QAM-16 or QAM-64 encode information in the magnitude, they require more precise magnitude correction than this block currently provides. Therefore, the receiver is limited to BPSK and QPSK, which rely primarily on phase.
 
+		○ Which other functions are performed in this block? 
+		- In addition to equalization, this block performs "housekeeping" on the subcarriers. It removes the DC component, guard subcarriers, and pilot subcarriers. It takes the 64-symbol input vector and subsets it down to the 48 data symbols that carry the actual information.
 
+	■ Work through Section 2.7
+		○ Frame Format and Delimiting
+			- Frame Structure: according to the article, the frame begins with the short and long training sequences (preambles), which are immediately followed by the Signal Field.
+			- Delimiting the Frame: In the context of computer networks, "framing" requires defining where a packet starts and ends.
+			- Start: This receiver identifies the start of the frame using the preamble sequences (specifically through autocorrelation of the short training sequence).
+			- End/Length: To delimit the extent of the frame (i.e., where it ends), the receiver relies on the Signal Field. This field explicitly carries information about the length of the frame. Once decoded, this length information allows the receiver to process the exact number of symbols required for the payload.
 
+		○ What is the Signal Field?
+			- The Signal Field is a specific OFDM symbol located immediately after the short and long training sequences in a frame. It is physically distinguished by being always BPSK modulated and encoded with a coding rate of 1/2.
 
+		○ Which information is sent there?
+			- This field carries two critical pieces of information regarding the "payload" symbols that follow it:
+				-Length: The duration or size of the frame.
+				-Encoding: The Modulation and Coding Scheme (MCS) used for the subsequent data symbols.
 
-Week 6
-■ Understand the OFDM Equalize Symbols module
+		○ Why is this information necessary?
+			- This information is essential for the receiver to process the rest of the frame.
+			- The receiver uses this data to annotate the sample stream with a tag containing the encoding and length tuple.
+			- This tag is strictly required by the subsequent block (OFDM Decode MAC) to successfully decode the payload. Without knowing the specific encoding (e.g., whether the payload is QPSK or BPSK) and the exact length, the receiver would not know how to demodulate the data or when the frame ends.
 
-.What does it do? The OFDM Equalize Symbols module is responsible for transitioning from the time domain to the frequency domain (following the FFT). Its primary tasks are phase offset correction and channel estimation (correcting the magnitude of the carriers).
-
-.Why is the implementation limited to deal with BPSK and QPSK modulation? The implementation assumes the magnitude of the carriers is sinc-shaped and corrects it based on that assumption. However, this shape can depend on the sender and hardware filters. Since higher-order modulations like QAM-16 or QAM-64 encode information in the magnitude, they require more precise magnitude correction than this block currently provides. Therefore, the receiver is limited to BPSK and QPSK, which rely primarily on phase.
-
-.Which other functions are performed in this block? In addition to equalization, this block performs "housekeeping" on the subcarriers. It removes the DC component, guard subcarriers, and pilot subcarriers. It takes the 64-symbol input vector and subsets it down to the 48 data symbols that carry the actual information.
-
-■ Work through Section 2.7
-Frame Format and Delimiting
-
-.Frame Structure: according to the article, the frame begins with the short and long training sequences (preambles), which are immediately followed by the Signal Field.
-
-.Delimiting the Frame: In the context of computer networks, "framing" requires defining where a packet starts and ends.
-
-.Start: This receiver identifies the start of the frame using the preamble sequences (specifically through autocorrelation of the short training sequence).
-
-.End/Length: To delimit the extent of the frame (i.e., where it ends), the receiver relies on the Signal Field. This field explicitly carries information about the length of the frame. Once decoded, this length information allows the receiver to process the exact number of symbols required for the payload.
-
-What is the Signal Field?
-The Signal Field is a specific OFDM symbol located immediately after the short and long training sequences in a frame. It is physically distinguished by being always BPSK modulated and encoded with a coding rate of 1/2.
-
-Which information is sent there?
-This field carries two critical pieces of information regarding the "payload" symbols that follow it:
-
-
--Length: The duration or size of the frame.
-
-
--Encoding: The Modulation and Coding Scheme (MCS) used for the subsequent data symbols.
-
-Why is this information necessary?
-This information is essential for the receiver to process the rest of the frame.
-
-.The receiver uses this data to annotate the sample stream with a tag containing the encoding and length tuple.
-
-.This tag is strictly required by the subsequent block (OFDM Decode MAC) to successfully decode the payload. Without knowing the specific encoding (e.g., whether the payload is QPSK or BPSK) and the exact length, the receiver would not know how to demodulate the data or when the frame ends.
-
-.How is that information encoded?
-
-Based on Section 2.7 of the provided article, the information in the Signal Field is encoded using a robust, fixed configuration to ensure it can be decoded by any receiver before knowing the specific settings of the payload.
-
-The encoding characteristics are:
-
-
-.Modulation: It uses BPSK (Binary Phase Shift Keying) modulation.
-
-
-.Coding Rate: It is encoded with a rate of 1/2.
-
-
-.Convolutional Coding: The field is protected by a convolutional code (which the receiver decodes using the IT++ library).
-
-
-.Validation: The encoding includes a parity bit to allow the receiver to verify if the field was decoded correctly.
-
-This robust encoding ensures that the critical "Length" and "Rate" information can be retrieved reliably even in difficult channel conditions, allowing the receiver to then configure itself to decode the subsequent payload (which may use faster but less robust modulation like QPSK or QAM).
+		○ How is that information encoded?
+			- Based on Section 2.7 of the provided article, the information in the Signal Field is encoded using a robust, fixed configuration to ensure it can be decoded by any receiver before knowing the specific settings of the payload.
+			- The encoding characteristics are:
+			- Modulation: It uses BPSK (Binary Phase Shift Keying) modulation.
+			- Coding Rate: It is encoded with a rate of 1/2.
+			- Convolutional Coding: The field is protected by a convolutional code (which the receiver decodes using the IT++ library).
+			- Validation: The encoding includes a parity bit to allow the receiver to verify if the field was decoded correctly.
+			- This robust encoding ensures that the critical "Length" and "Rate" information can be retrieved reliably even in difficult channel conditions, allowing the receiver to then configure itself to decode the subsequent payload (which may use faster but less robust modulation like QPSK or QAM).
 
 Week 7
 ■ Work through decoding the payload (Section 2.8)
@@ -209,12 +175,16 @@ Week 7
 •	How can the receiver de-scramble without explicit knowledge of the scrambler initial state?
 ■ Which fields of the received frames are used and how?
 
+
+
+
+
+
 Week 8
 ■ Understand the decoding (Section 2.8)
 ○ Will add detailed questions about the decoding later
 ■ Try out your 802.11a receiver with a real 802.11a access point. Can you see the received frames?
 ○ Read Section 8 (Interoperability)
-
 
 
 
