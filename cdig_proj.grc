@@ -195,6 +195,24 @@ blocks:
     coordinate: [1232, 288.0]
     rotation: 0
     state: enabled
+- name: blocks_file_sink_0
+  id: blocks_file_sink
+  parameters:
+    affinity: ''
+    alias: ''
+    append: 'False'
+    comment: ''
+    file: ''
+    type: byte
+    unbuffered: 'False'
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [3304, 328.0]
+    rotation: 0
+    state: enabled
 - name: blocks_file_source_0
   id: blocks_file_source
   parameters:
@@ -310,6 +328,23 @@ blocks:
     bus_source: false
     bus_structure: null
     coordinate: [824, 304.0]
+    rotation: 0
+    state: enabled
+- name: foo_wireshark_connector_0
+  id: foo_wireshark_connector
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    debug: 'False'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    tech: '195'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [3080, 328.0]
     rotation: 0
     state: enabled
 - name: ieee802_11_decode_mac_0
@@ -662,9 +697,11 @@ connections:
 - [fir_filter_xxx_0, '0', blocks_complex_to_mag_0, '0']
 - [fir_filter_xxx_0, '0', ieee802_11_sync_short_0, '1']
 - [fir_filter_xxx_0_0, '0', blocks_divide_xx_0, '1']
+- [foo_wireshark_connector_0, '0', blocks_file_sink_0, '0']
 - [ieee802_11_decode_mac_0, out, ieee802_11_parse_mac_0, in]
 - [ieee802_11_frame_equalizer_0, '0', ieee802_11_decode_mac_0, '0']
 - [ieee802_11_frame_equalizer_0, symbols, qtgui_const_sink_x_0, in]
+- [ieee802_11_parse_mac_0, out, foo_wireshark_connector_0, in]
 - [ieee802_11_parse_mac_0, out, network_socket_pdu_0, pdus]
 - [ieee802_11_sync_long_0, '0', blocks_stream_to_vector_0, '0']
 - [ieee802_11_sync_short_0, '0', blocks_delay_1, '0']
