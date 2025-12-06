@@ -165,26 +165,60 @@ WEEK 6
 Week 7
 ■ Work through decoding the payload (Section 2.8)
 ○ Which abstract receiver blocks are within the module OFDM Decode Mac?
-○ How many constellation symbols are demodulated at once? Why? Can you change this? What is the impact of changing this?
-•	What is the actual process of digital demodulation? What is the input and the output, and how is the conversion done? Look at the code if necessary.
+
+	.Demodulation: Mapping complex constellation points to soft-bits.
+
+	.Deinterleaving: Permuting the bits of a symbol.
+
+	.Convolutional Decoding and Puncturing: Using the IT++ library to decode the convolutional code.
+
+	.Descrambling: Reversing the scrambling applied by the encoder.
+
+	.Output: Packing the payload into a GNU Radio message.
+
+○ How many constellation symbols are demodulated at once? 
+	The block demodulates 48 constellation symbols at once. Why? This number corresponds to the 48 data subcarriers per OFDM symbol. (As detailed in Section 2.6, the original 64 subcarriers are subsetted to remove DC, guard, and pilot carriers, leaving 48 data carriers ). Can you change this? What is the impact of changing this? The text implies this value is derived directly from the physical layer structure of the OFDM symbol ("corresponding to the 48 data subcarriers"). Changing this would break alignment with the IEEE 802.11a/g/p standard, as the receiver would no longer process exactly one OFDM data symbol at a time.
+
+•	What is the actual process of digital demodulation? 
+	.Input: The input consists of "vectors of 48 constellation points in the complex plane".
+
+	.Conversion: The points are mapped according to the modulation scheme used (e.g., BPSK, QPSK).
+
+	.Output: The output consists of "floating point values, representing the soft-bits of the employed modulation".
+
 ○ Understand what is de-interleaving.
-•	Watch the video in Panopto explaining what is de-interleaving.
-•	Find the code that does de-interleaving and understand it.
+	The article defines de-interleaving as a process where "the bits of a symbol are permuted".
+		.This permutation depends on the Modulation and Coding Scheme (MCS).
+
+		.The permutation pattern remains the same for all symbols within a single frame.
+
 ○ Understand de-scrambling
-•	What is scrambling/ descrambling? Why is it used?
+	
+	.The article describes the scrambler as a mechanism implemented using a seven-bit feedback shift register. In the encoder (the sender), the initial state of this register is set to a pseudo-random value. The descrambler is the final step in the receiver's decoding chain intended to reverse this process. While the article does not explicitly detail the physical layer benefits (like spectral flatness), it specifies that the encoder initializes the state to a pseudo-random value, creating 128 (2^7) possible initial states. This ensures the transmitted data pattern appears pseudo-random regardless of the actual payload content.
+
 •	How can the receiver de-scramble without explicit knowledge of the scrambler initial state?
+	.Since the transmitter picks a pseudo-random initial state (one of 128 possibilities) and does not explicitly send this "seed" to the receiver, the receiver must deduce the initial state from the incoming data stream itself. 
+	The receiver leverages the fact that a specific part of the message has a known, constant value, allowing it to "reverse engineer" the state used by the scrambler.
 ■ Which fields of the received frames are used and how?
+	
+	.The Field Used: The receiver looks at the first 7 bits of the payload, which constitute the service field.
+
+	.The Known Value: According to the standard, these 7 bits are always set to zero at the input of the scrambler.
+
+	.The Mechanism (Lookup Table):
+
+		1.The receiver sees the scrambled version of these 7 bits.
+
+		2.Because the receiver knows the original bits were zeros, the pattern it actually receives is entirely the result of the scrambler's initial state.
+
+		3.The receiver uses a lookup table that maps the received 7 bits directly to the corresponding initial state of the scrambler.
+
+		4.Once the initial state is identified, the receiver can correctly descramble the rest of the payload.
 
 
 
 
 
-
-Week 8
-■ Understand the decoding (Section 2.8)
-○ Will add detailed questions about the decoding later
-■ Try out your 802.11a receiver with a real 802.11a access point. Can you see the received frames?
-○ Read Section 8 (Interoperability)
 
 
 
