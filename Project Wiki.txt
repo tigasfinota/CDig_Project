@@ -118,6 +118,9 @@ WEEK 5
 		- The estimated phase offset is subtracted from each subcarrier in the symbol. The complex samples in the frequency domain have their phase corrected. Magnitude is not changed except when performing channel equalization, which is a separate step.
 
 
+
+
+
 27/Novembro a 3/Dezembro:
 	- Análise dos tópicos propostos para a semana 6 e 7
 	- Resposta às questões das semanas 6 e 7 (verificar respostas abaixo)
@@ -161,6 +164,12 @@ WEEK 6
 			- Convolutional Coding: The field is protected by a convolutional code (which the receiver decodes using the IT++ library).
 			- Validation: The encoding includes a parity bit to allow the receiver to verify if the field was decoded correctly.
 			- This robust encoding ensures that the critical "Length" and "Rate" information can be retrieved reliably even in difficult channel conditions, allowing the receiver to then configure itself to decode the subsequent payload (which may use faster but less robust modulation like QPSK or QAM).
+
+
+
+
+4/Dezembro a 7/Dezembro:
+- Implementação dos blocos de escrita do ficheiro para leitura dos pacotes recebidos atravez do wireshark
 
 Week 7
 ■ Work through decoding the payload (Section 2.8)
